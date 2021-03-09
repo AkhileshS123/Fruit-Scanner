@@ -3,8 +3,125 @@ import { AppRegistry, Text, View, StyleSheet, ImageBackground, Image, TouchableH
 import Constants from 'expo-constants';
 import colors from "./colors.js";
 import 'react-native-gesture-handler'; 
-//test does this count?
+import { NavigationContainer } from '@react-navigation/native';
+import { createStackNavigator } from '@react-navigation/stack';
 
+const Stack = createStackNavigator();
+
+const MyStack = () => {
+    return(
+        <NavigationContainer>
+            <Stack.Navigator>
+                <Stack.Screen
+                    name="Home"
+                    component={HomeScreen}
+                    options={{ title: 'Welcome' }}
+                />
+                <Stack.Screen
+                    name="Scanner Screen"
+                    component={ScannerScreen}
+                    options={{ title: 'Scan Here' }}
+                />
+            </Stack.Navigator>
+        </NavigationContainer>
+    );
+}
+const HomeScreen = ({ navigation }) => {
+    return (
+        <View style={styles.container}>
+                
+            <ImageBackground
+                source={require("./assets/Fruit-Assortment.jpg")}
+                style={{height: "100%", width: "100%",}}
+            >
+                <View style={styles.overlay}>
+
+                    <View> 
+                        <Text style={styles.title}>
+                            Fresh Fruit
+                        </Text>
+                        <Text style={styles.subTitle}>
+                            An app designed to show you how fresh your fruit is.
+                        </Text>
+                    </View>
+                    
+                    
+                    
+                    <Image
+                        source={require("./assets/Orange-Cut.jpg")}
+                        style={{ height: 200, width: 200, marginBottom: 20, opacity: 1, borderRadius: 20,}}
+                    />
+                
+                            <TouchableOpacity
+                                onPress={() => {
+                                    navigation.navigate('Scanner Screen');
+                                }}
+                                style={{underlayColor: "#ffffff00",}}
+                            >
+                                <View style={styles.scanButton}>
+                                    <Text style={styles.buttonText}>
+                                        Scan
+                                    </Text>
+                                </View>
+                            </TouchableOpacity>
+                    
+                </View>
+                
+            </ImageBackground>
+        
+        </View>
+    );
+  };
+
+const ScannerScreen = ({ navigation }) => {
+    return (
+        <View style={styles.container}>
+                
+            <ImageBackground
+                source={require("./assets/Fruit-Assortment.jpg")}
+                style={{height: "100%", width: "100%",}}
+            >
+                <View style={styles.overlay}>
+
+                    <View> 
+                        <Text style={styles.title}>
+                            Scanner
+                        </Text>
+                        <Text style={styles.subTitle}>
+                            Scan you fruit below. First select your fruit type.
+                        </Text>
+                    </View>
+                    
+                    
+                    
+                    <Image
+                        source={require("./assets/Orange-Cut.jpg")}
+                        style={{ height: 200, width: 200, marginBottom: 20, opacity: 1, borderRadius: 20,}}
+                    />
+                
+                            <TouchableOpacity
+                                onPress={() => {
+                                    navigation.navigate('Home');
+                                }}
+                                style={{underlayColor: "#ffffff00",}}
+                            >
+                                <View style={styles.scanButton}>
+                                    <Text style={styles.buttonText}>
+                                        Back to Home
+                                    </Text>
+                                </View>
+                            </TouchableOpacity>
+                    
+                </View>
+                
+            </ImageBackground>
+        
+        </View>
+    );
+};
+
+export default MyStack;
+/*
 export default class App extends Component {
     render() {
         return (
@@ -53,7 +170,7 @@ export default class App extends Component {
         );
     }
 }
-
+*/
 
 const styles = StyleSheet.create({
     container: {
