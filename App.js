@@ -3,7 +3,7 @@ import { AppRegistry, Text, View, StyleSheet, ImageBackground, Image, TouchableH
 import Constants from 'expo-constants';
 import colors from "./colors.js";
 import 'react-native-gesture-handler'; 
-//test
+//test does this count?
 
 export default class App extends Component {
     render() {
