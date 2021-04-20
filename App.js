@@ -83,6 +83,10 @@ const ScannerScreen = ({ navigation }) => {
     const [url, setURL]=useState("https://i.pinimg.com/originals/6f/f0/7d/6ff07d9a588723df95baa124a5aaaa40.jpg");
     const [displayText, setDisplayText]=useState("Ready to Scan");
 
+    async function loadModel() {
+        return tf.loadLayersModel("some address");
+    }
+
     async function getPrediction(url) {
         setDisplayText("Loading TensorFlow");
         await tf.ready();
