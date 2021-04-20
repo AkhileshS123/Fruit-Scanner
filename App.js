@@ -5,10 +5,14 @@ import colors from "./colors.js";
 import 'react-native-gesture-handler'; 
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
+import { TextInput } from 'react-native-gesture-handler';
+import { useEffect, useState } from "react";
+import * as tf from "@tensorflow/tfjs";
+
 
 const Stack = createStackNavigator();
 
-const MyStack = () => {
+export default function MyStack(){
     return(
         <NavigationContainer>
             <Stack.Navigator>
@@ -26,6 +30,7 @@ const MyStack = () => {
         </NavigationContainer>
     );
 }
+
 const HomeScreen = ({ navigation }) => {
     return (
         <View style={styles.container}>
@@ -74,6 +79,10 @@ const HomeScreen = ({ navigation }) => {
   };
 
 const ScannerScreen = ({ navigation }) => {
+    const [url, setURL]=useState("https://i.pinimg.com/originals/6f/f0/7d/6ff07d9a588723df95baa124a5aaaa40.jpg");
+    function getPrediction(url) {
+    }
+
     return (
         <View style={styles.container}>
                 
@@ -88,29 +97,44 @@ const ScannerScreen = ({ navigation }) => {
                             Scanner
                         </Text>
                         <Text style={styles.subTitle}>
-                            Scan you fruit below. First select your fruit type.
+                            Scan your fruit below. First enter your fruit URL.
                         </Text>
                     </View>
                     
-                    
-                    
                     <Image
-                        source={require("./assets/Orange-Cut.jpg")}
+                        source={{uri:url}}
                         style={{ height: 200, width: 200, marginBottom: 20, opacity: 1, borderRadius: 20,}}
                     />
+
+                    <TextInput
+                        style={{height: 40, width: 400, borderColor: "white", borderWidth: 1, backgroundColor: "white", color: "orange", marginBottom: 20, borderRadius: 20, padding: 10}}
+                        onChangeText={text=>setURL(text)}
+                        value={url}
+                    />
                 
-                            <TouchableOpacity
-                                onPress={() => {
-                                    navigation.navigate('Home');
-                                }}
-                                style={{underlayColor: "#ffffff00",}}
-                            >
-                                <View style={styles.scanButton}>
-                                    <Text style={styles.buttonText}>
-                                        Back to Home
-                                    </Text>
-                                </View>
-                            </TouchableOpacity>
+                    <TouchableOpacity
+                        onPress={() => getPrediction(url)}
+                        style={{underlayColor: "#ffffff00",}}
+                    >
+                        <View style={styles.scanButton}>
+                            <Text style={styles.buttonText}>
+                                Scan Fruit
+                            </Text>
+                        </View>
+                    </TouchableOpacity>
+
+                    <TouchableOpacity
+                        onPress={() => {
+                            navigation.navigate('Home');
+                        }}
+                        style={{underlayColor: "#ffffff00",}}
+                    >
+                        <View style={styles.scanButton}>
+                            <Text style={styles.buttonText}>
+                                Back to Home
+                            </Text>
+                        </View>
+                    </TouchableOpacity>
                     
                 </View>
                 
@@ -120,7 +144,6 @@ const ScannerScreen = ({ navigation }) => {
     );
 };
 
-export default MyStack;
 /*
 export default class App extends Component {
     render() {
