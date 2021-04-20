@@ -8,7 +8,8 @@ import { createStackNavigator } from '@react-navigation/stack';
 import { TextInput } from 'react-native-gesture-handler';
 import { useEffect, useState } from "react";
 import * as tf from "@tensorflow/tfjs";
-
+import * as jpeg from "jpeg-js";
+import * as mobilenet from "@tensorflow-models/mobilenet";
 
 const Stack = createStackNavigator();
 
@@ -80,7 +81,37 @@ const HomeScreen = ({ navigation }) => {
 
 const ScannerScreen = ({ navigation }) => {
     const [url, setURL]=useState("https://i.pinimg.com/originals/6f/f0/7d/6ff07d9a588723df95baa124a5aaaa40.jpg");
-    function getPrediction(url) {
+    const [displayText, setDisplayText]=useState("Ready to Scan");
+
+    async function getPrediction(url) {
+        setDisplayText("Loading TensorFlow");
+        await tf.ready();
+        setDisplayText("Loading MobileNet");
+        const model = await mobilenet.load()
+        setDisplayText("Fetching Image");
+        const response = await fetch(url, {}, {isBinary: true})
+        setDisplayText("Getting Image Buffer");
+        const imageData = await response.arrayBuffer();
+        setDisplayText("Getting Image Tensor");
+        const imageTensor = imageToTensor(imageData);
+        setDisplayText("Classifying");
+        const prediction = await model.classify(imageTensor);
+        setDisplayText(JSON.stringify(prediction));
+    }
+
+    function imageToTensor(rawImageData) {
+        const TO_UINT8ARRAY = true;
+        const { width, height, data } = jpeg.decode(rawImageData, TO_UINT8ARRAY);
+        // Drop the alpha channel info for mobilenet
+        const buffer = new Uint8Array(width * height * 3);
+        let offset = 0; // offset into original data
+        for (let i = 0; i < buffer.length; i += 3) {
+            buffer[i] = data[offset];
+            buffer[i + 1] = data[offset + 1];
+            buffer[i + 2] = data[offset + 2];
+            offset += 4;
+        }
+        return tf.tensor3d(buffer, [height, width, 3]);
     }
 
     return (
@@ -107,7 +138,7 @@ const ScannerScreen = ({ navigation }) => {
                     />
 
                     <TextInput
-                        style={{height: 40, width: 400, borderColor: "white", borderWidth: 1, backgroundColor: "white", color: "orange", marginBottom: 20, borderRadius: 20, padding: 10}}
+                        style={{height: 40, width: 400, borderColor: "white", borderWidth: 1, backgroundColor: "white", color: "orange", borderRadius: 20, padding: 10}}
                         onChangeText={text=>setURL(text)}
                         value={url}
                     />
@@ -122,6 +153,8 @@ const ScannerScreen = ({ navigation }) => {
                             </Text>
                         </View>
                     </TouchableOpacity>
+
+                    <Text style={{color:"white", textAlign: "center", marginTop: 20}}>{displayText}</Text>
 
                     <TouchableOpacity
                         onPress={() => {
